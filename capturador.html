@@ -11,6 +11,7 @@
                 background-color: gray;
             }
         </style>
+        <script type="text/javascript" src="capturador.js"></script>
     </head>
     <body>
         <h1>Capturador - Javascript</h1>
@@ -59,57 +60,5 @@
         <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur congue tincidunt pharetra. Aliquam aliquam pretium venenatis. Donec turpis tortor, varius eu lorem at, rhoncus consequat nibh. Mauris leo ante, facilisis id erat quis, dignissim dignissim massa. Donec feugiat lacus in massa varius efficitur. Phasellus facilisis tincidunt hendrerit. Aenean massa augue, gravida vel ornare eget, cursus vel magna. Nam ultrices ipsum non efficitur faucibus. 
         </p>
-        <script type="text/javascript">
-            prevEvent = null;
-            actEvent = null;
-
-            function takeMouseMetrics(e) {
-                //conseguir posicion del mouse local en base a la ventana
-                //console.log('clientX:', e.clientX, '; clientY:', e.clientY);
-                document.getElementById('clientX-value').textContent = e.clientX;
-                document.getElementById('clientY-value').textContent = e.clientY;
-
-                //conseguir posicion del mouse en base a la página
-                //console.log('pageX:', e.pageX, '; pageY:', e.pageY);
-                document.getElementById('pageX-value').textContent = e.pageX;
-                document.getElementById('pageY-value').textContent = e.pageY;
-                
-                //conseguir el tamaño de la ventana
-                //console.log('screenX:', window.outerWidth, '; screenY:', window.outerHeight);
-                document.getElementById('screenX-value').textContent = window.outerWidth;
-                document.getElementById('screenY-value').textContent = window.outerHeight;
-                
-                //conseguir el nivel de scroll y tamaño del scroll
-                //console.log('scrollY:', window.scrollY, '; scrollHeight:', document.documentElement.scrollHeight);
-                document.getElementById('scrollY-value').textContent = window.scrollY;
-                document.getElementById('scrollHeight-value').textContent = document.documentElement.scrollHeight;
-                
-                actEvent = e;
-            }
-
-            window.addEventListener('mousemove', function (e) {
-                actEvent = e;
-            })
-
-            var miliseconds = 1000;
-            var transformation = miliseconds * 0.001;
-            var prevSpeed = 0;
-            setInterval(function(){
-                if (prevEvent && actEvent) {
-                    takeMouseMetrics(actEvent);
-                    var movementX=Math.abs(actEvent.screenX-prevEvent.screenX);
-                    var movementY=Math.abs(actEvent.screenY-prevEvent.screenY);
-                    //hipotenusa de triangulo para saber movimiento
-                    var movement=Math.sqrt(movementX*movementX+movementY*movementY);
-                    // pixeles / segundos
-                    var speed=transformation*movement;
-                    console.log('speed:', speed);
-                    var acceleration=transformation*(speed-prevSpeed);
-                    console.log('acceleration:', acceleration);
-                }
-                prevEvent = actEvent;
-                prevSpeed = speed;
-            },miliseconds);
-        </script>
     </body>
 </html>

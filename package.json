@@ -1,0 +1,30 @@
+{
+  "name": "capturador",
+  "version": "1.0.0",
+  "description": "",
+  "main": "capturador.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.3",
+    "mongoose": "^5.11.7"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.6"
+  },
+  "scripts": {
+    "devStart": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Keykor/Capturador-de-eventos-de-interaccion-web.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Keykor/Capturador-de-eventos-de-interaccion-web/issues"
+  },
+  "homepage": "https://github.com/Keykor/Capturador-de-eventos-de-interaccion-web#readme"
+}

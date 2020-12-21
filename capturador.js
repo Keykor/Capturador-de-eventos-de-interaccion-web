@@ -44,7 +44,7 @@ window.addEventListener('scroll', function(e) {
     saveLog(log)
 })
 
-var miliseconds = 1000;
+var miliseconds = 2500;
 var transformation = miliseconds * 0.001;
 var prevSpeed = 0;
 var speed = 0;
@@ -83,14 +83,17 @@ setInterval(function(){
     saveLog(log)
 },miliseconds);
 
-function saveLog(obj) {
-    console.log(obj);
-    logs.push(obj)
+setInterval(function() {
+    const logsToSend = logs.splice(0);
     let xhr = new XMLHttpRequest();
     xhr.open("POST","http://localhost:3000/logs", true);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify(obj));
+    xhr.send(JSON.stringify(logsToSend));
     xhr.onload = function() {
         console.log(JSON.stringify(xhr.response))
     };
+}, 5000)
+
+function saveLog(obj) {
+    logs.push(obj)
 }

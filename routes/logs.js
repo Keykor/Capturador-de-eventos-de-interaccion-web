@@ -12,17 +12,20 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) =>{
-    console.log(req.body)
-    const log = new Log({
-        type: req.body.type,
-        timestamp: req.body.timestamp
-    })
-    try {
-        const newLog = await log.save()
-        res.status(201).json(newLog)
-    } catch (err) {
-        res.status(400).json({ message: err.message })
-    }
-})
+    console.log("nuevo req");
+    req.body.forEach(async element => {
+        const log = new Log({
+            type: element.type,
+            timestamp: element.timestamp
+        });
+        try {
+            await log.save();
+            console.log("yay!");
+        } catch (err) {
+            res.status(400).json({ message: err.message });
+        }
+    });
+    res.status(201).json(req.body);
+}) 
 
 module.exports = router

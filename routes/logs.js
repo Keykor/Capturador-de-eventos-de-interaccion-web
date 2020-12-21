@@ -12,15 +12,14 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) =>{
-    console.log("nuevo req");
     req.body.forEach(async element => {
         const log = new Log({
             type: element.type,
-            timestamp: element.timestamp
+            timestamp: element.timestamp,
+            data: element.data
         });
         try {
             await log.save();
-            console.log("yay!");
         } catch (err) {
             res.status(400).json({ message: err.message });
         }

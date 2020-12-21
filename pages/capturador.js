@@ -21,7 +21,6 @@ var speed = 0;
 var acceleration = 0;
 setInterval(function(){
     if (prevEvent && actEvent) {
-        //takeMouseMetrics(actEvent);
         var movementX=Math.abs(actEvent.screenX-prevEvent.screenX);
         var movementY=Math.abs(actEvent.screenY-prevEvent.screenY);
         //hipotenusa de triangulo para saber movimiento

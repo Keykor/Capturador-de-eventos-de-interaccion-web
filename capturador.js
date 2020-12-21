@@ -2,46 +2,16 @@ prevEvent = null;
 actEvent = null;
 logs = []
 
-function takeMouseMetrics(e) {
-    //conseguir posicion del mouse local en base a la ventana
-    //console.log('clientX:', e.clientX, '; clientY:', e.clientY);
-    document.getElementById('clientX-value').textContent = e.clientX;
-    document.getElementById('clientY-value').textContent = e.clientY;
-
-    //conseguir posicion del mouse en base a la página
-    //console.log('pageX:', e.pageX, '; pageY:', e.pageY);
-    document.getElementById('pageX-value').textContent = e.pageX;
-    document.getElementById('pageY-value').textContent = e.pageY;
-    
-    //conseguir el tamaño de la ventana
-    //console.log('outerWidth:', window.outerWidth, '; outerHeight:', window.outerHeight);
-    document.getElementById('screenX-value').textContent = window.outerWidth;
-    document.getElementById('screenY-value').textContent = window.outerHeight;
-    
-    //conseguir el nivel de scroll y tamaño del scroll
-    //console.log('scrollY:', window.scrollY, '; scrollHeight:', document.documentElement.scrollHeight);
-    document.getElementById('scrollY-value').textContent = window.scrollY;
-    document.getElementById('scrollHeight-value').textContent = document.documentElement.scrollHeight;
-}
-
 window.addEventListener('mousemove', function (e) {
     actEvent = e;
 })
 
 window.addEventListener('click', function(e) {
-    log = {
-        type: 'mouse click',
-        timestamp: Date.now()
-    }
-    saveLog(log)
+    saveLog('mouse click', positionalData())
 })
 
 window.addEventListener('scroll', function(e) {
-    log = {
-        type: 'scrolling',
-        timestamp: Date.now()
-    }
-    saveLog(log)
+    saveLog('scrolling', positionalData())
 })
 
 var miliseconds = 2500;
@@ -65,24 +35,33 @@ setInterval(function(){
     prevEvent = actEvent;
     prevSpeed = speed;
 
-    log = {
-        type: 'mouse movement',
-        timestamp: Date.now(),
-        data: {
-            speed: speed,
-            acceleration: acceleration,
-            posX: actEvent.clientX,
-            clientY: actEvent.clientY,
-            pageY: actEvent.pageY,
-            outerWidth: window.outerWidth,
-            outerHeight: window.outerHeight,
-            scrollY: window.scrollY,
-            scrollHeight: document.documentElement.scrollHeight
-        }
-    }
-    saveLog(log)
+    const data = positionalData();
+    data.speed = speed;
+    data.acceleration = acceleration;
+    saveLog('mouse movement', data)
 },miliseconds);
 
+function saveLog(newType, newData) {
+    logs.push({
+        type: newType,
+        timestamp: Date.now(),
+        data: newData
+    })
+}
+
+function positionalData() {
+    return {
+        posX: actEvent.clientX,
+        clientY: actEvent.clientY,
+        pageY: actEvent.pageY,
+        outerWidth: window.outerWidth,
+        outerHeight: window.outerHeight,
+        scrollY: window.scrollY,
+        scrollHeight: document.documentElement.scrollHeight
+    }
+}
+
+//ENVIO DE DATOS
 setInterval(function() {
     const logsToSend = logs.splice(0);
     let xhr = new XMLHttpRequest();
@@ -93,7 +72,3 @@ setInterval(function() {
         console.log(JSON.stringify(xhr.response))
     };
 }, 5000)
-
-function saveLog(obj) {
-    logs.push(obj)
-}

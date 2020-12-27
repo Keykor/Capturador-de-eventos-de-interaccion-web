@@ -27,9 +27,7 @@ setInterval(function(){
         var movement=Math.sqrt(movementX*movementX+movementY*movementY);
         // pixeles / segundos
         speed=transformation*movement;
-        //console.log('speed:', speed);
         acceleration=transformation*(speed-prevSpeed);
-        //console.log('acceleration:', acceleration);
     }
     prevEvent = actEvent;
     prevSpeed = speed;
@@ -62,6 +60,8 @@ function positionalData() {
 
 //ENVIO DE DATOS
 setInterval(function() {
+    //uso la funcion splice con 0 para cortar y borrar el array atómicamente
+    //si lo hiciera en dos pasos tendría problemas de memoria compartida
     const logsToSend = logs.splice(0);
     let xhr = new XMLHttpRequest();
     xhr.open("POST","http://localhost:3000/logs", true);

@@ -1,6 +1,8 @@
 prevEvent = null;
 actEvent = null;
-logs = []
+scrollEvent = null;
+lastScrollEvent = null;
+logs = [];
 
 window.addEventListener('mousemove', function (e) {
     actEvent = e;
@@ -11,16 +13,16 @@ window.addEventListener('click', function(e) {
 })
 
 window.addEventListener('scroll', function(e) {
-    saveLog('scrolling', positionalData())
+    scrollEvent = e;
 })
 
-var miliseconds = 2500;
+var miliseconds = 1000;
 var transformation = miliseconds * 0.001;
 var prevSpeed = 0;
 var speed = 0;
 var acceleration = 0;
 setInterval(function(){
-    if (prevEvent && actEvent) {
+    if (prevEvent && actEvent && (prevEvent != actEvent)) {
         var movementX=Math.abs(actEvent.screenX-prevEvent.screenX);
         var movementY=Math.abs(actEvent.screenY-prevEvent.screenY);
         //hipotenusa de triangulo para saber movimiento
@@ -28,14 +30,19 @@ setInterval(function(){
         // pixeles / segundos
         speed=transformation*movement;
         acceleration=transformation*(speed-prevSpeed);
+
+        const data = positionalData();
+        data.speed = speed;
+        data.acceleration = acceleration;
+        saveLog('mouse movement', data);
     }
     prevEvent = actEvent;
     prevSpeed = speed;
 
-    const data = positionalData();
-    data.speed = speed;
-    data.acceleration = acceleration;
-    saveLog('mouse movement', data)
+    if (scrollEvent && !(scrollEvent === lastScrollEvent)) { 
+        saveLog('scrolling', positionalData());
+        lastScrollEvent = scrollEvent;
+    }
 },miliseconds);
 
 function saveLog(newType, newData) {

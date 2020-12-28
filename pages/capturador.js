@@ -80,7 +80,7 @@ function submitForm(e, form) {
         alert("Ha ocurrido un error en el envío. Intente nuevamente.");
         form[2].disabled = false;
     };
-    xhr.open("POST","http://localhost:3000/logs", true);
+    xhr.open("POST","http://e523cff0ee29.ngrok.io/logs", true);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.send(JSON.stringify(objeto));
     xhr.onload = function() {

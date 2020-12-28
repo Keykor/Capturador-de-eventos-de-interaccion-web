@@ -12,18 +12,17 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) =>{
-    req.body.forEach(async element => {
-        const log = new Log({
-            type: element.type,
-            timestamp: element.timestamp,
-            data: element.data
-        });
-        try {
-            await log.save();
-        } catch (err) {
-            res.status(400).json({ message: err.message });
-        }
+    console.log(req.body);
+    const log = new Log({
+        age: req.body.age,
+        level: req.body.level,
+        logs: req.body.logs
     });
+    try {
+        await log.save();
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    };
     res.status(201).json(req.body);
 }) 
 

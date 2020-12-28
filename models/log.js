@@ -1,15 +1,15 @@
 const mongoose = require('mongoose')
 
 const logSchema = new mongoose.Schema({
-    type: {
-        type: String,
+    age: {
+        type: Number,
         required: true
     },
-    timestamp: {
-        type: Date,
+    level: {
+        type: Number,
         required: true
     },
-    data: {
+    logs: {
         type: Object,
         required: true
     }

@@ -3,6 +3,7 @@ const router = express.Router()
 const Log = require('../models/log')
 
 router.get('/', async (req, res) => {
+    console.log("LOGS GET")
     try {
         const logs = await Log.find()
         res.json(logs)
@@ -12,7 +13,7 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) =>{
-    console.log(req.body);
+    console.log("LOGS POST")
     const log = new Log({
         age: req.body.age,
         level: req.body.level,

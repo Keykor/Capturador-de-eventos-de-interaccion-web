@@ -75,13 +75,17 @@ function submitForm(e, form) {
         objeto[pair[0]] = pair[1];
     }
     objeto.logs = logs;
-    console.log(objeto)
     let xhr = new XMLHttpRequest();
+    xhr.onerror = () => {
+        alert("Ha ocurrido un error en el envío. Intente nuevamente.");
+        form[2].disabled = false;
+    };
     xhr.open("POST","http://localhost:3000/logs", true);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.send(JSON.stringify(objeto));
     xhr.onload = function() {
-        console.log(JSON.stringify(xhr.response))
+        alert("Sus datos se han enviado correctamente");
+        console.log(JSON.stringify(xhr.response));
     };
 }
 
@@ -89,7 +93,6 @@ var terminar = document.createElement("button");
 terminar.setAttribute("id","terminar");
 terminar.innerHTML = "Terminar formulario";
 terminar.addEventListener('click', function(e) {
-    console.log("holis");
     window.removeEventListener('mousemove', mouseMoveActualization);
     window.removeEventListener('click', mouseClickHandler);
     window.removeEventListener('scroll', scrollActualization);
@@ -138,6 +141,7 @@ terminar.addEventListener('click', function(e) {
     submitButton.innerHTML = "Enviar";
     submitButton.addEventListener('click', function(e) {
         if (validateForm(form)) {
+            submitButton.disabled = true;
             submitForm(e, form);
         }
     })
@@ -150,6 +154,7 @@ terminar.addEventListener('click', function(e) {
     form.appendChild(selectGroup);
     form.appendChild(submitButton);
 
+    terminar.disabled = true;
     document.getElementsByTagName('body')[0].appendChild(form);
 })
 document.getElementsByTagName('body')[0].appendChild(terminar);

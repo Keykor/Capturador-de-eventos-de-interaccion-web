@@ -75,6 +75,7 @@ function submitForm(e, form) {
         objeto[pair[0]] = pair[1];
     }
     objeto.logs = logs;
+    console.log(objeto)
     let xhr = new XMLHttpRequest();
     xhr.open("POST","http://localhost:3000/logs", true);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -102,46 +103,62 @@ terminar.addEventListener('click', function(e) {
     ageInput.setAttribute('name',"age");
     ageInput.setAttribute('min',"10");
     ageInput.setAttribute('max',"100");
+    ageInput.value = 18;
     
     var ageInputLabel = document.createElement("label");
     ageInputLabel.setAttribute('for',"age");
-    ageInputLabel.innerHTML = "Edad:";
+    ageInputLabel.innerHTML = "Edad: ";
+
+    var ageGroup = document.createElement("p");
+    ageGroup.appendChild(ageInputLabel);
+    ageGroup.appendChild(ageInput)
     
     var select = document.createElement("select");
     select.setAttribute('id',"formSelect");
     select.setAttribute('name',"level");
+    select.required = true;
     
-    var opt1 = document.createElement("option");
-    opt1.setAttribute('value',"1");
-    opt1.innerHTML = "1";
-    select.appendChild(opt1);
-    
-    var opt2 = document.createElement("option");
-    opt2.setAttribute('value',"2");
-    opt2.innerHTML = "2";
-    select.appendChild(opt2);
-    
-    var opt3 = document.createElement("option");
-    opt3.setAttribute('value',"3");
-    opt3.innerHTML = "3";
-    select.appendChild(opt3);
+    for(let i = 1; i < 4; i++) {
+        var opt = document.createElement("option");
+        opt.setAttribute('value', i);
+        opt.innerHTML = i;
+        select.appendChild(opt);
+    }
     
     var selectLabel = document.createElement("label");
     selectLabel.setAttribute('for',"level");
-    selectLabel.innerHTML = "Nivel tecnológico:";
+    selectLabel.innerHTML = "Nivel tecnológico: ";
+
+    var selectGroup = document.createElement("p");
+    selectGroup.appendChild(selectLabel);
+    selectGroup.appendChild(select)
     
     var submitButton = document.createElement("button");
+    submitButton.setAttribute('type','submit');
     submitButton.innerHTML = "Enviar";
     submitButton.addEventListener('click', function(e) {
-        submitForm(e, form);
+        if (validateForm(form)) {
+            submitForm(e, form);
+        }
     })
 
-	form.appendChild(ageInputLabel);
-    form.appendChild(ageInput);
-    form.appendChild(selectLabel);
-    form.appendChild(select);
+    var title = document.createElement("p");
+    title.innerHTML = "Datos finales".bold().fontsize(5);
+    
+    form.appendChild(title);
+	form.appendChild(ageGroup);
+    form.appendChild(selectGroup);
     form.appendChild(submitButton);
 
     document.getElementsByTagName('body')[0].appendChild(form);
 })
 document.getElementsByTagName('body')[0].appendChild(terminar);
+
+function validateForm(form) {
+    var age = form[0].value;
+    if (age == "" || age < 1 || age > 100) {
+        alert("Ingrese una edad válida");
+        return false;
+    }
+    return true;
+}

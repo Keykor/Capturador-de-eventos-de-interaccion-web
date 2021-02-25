@@ -14,6 +14,14 @@ app.use(express.json())
 
 app.use(cors())
 
+const path = require('path')
+const indexRouter = express.Router()
+indexRouter.get('/', async (req, res) => {
+    console.log(__dirname+'/pages/index.html')
+    res.sendFile(path.join(__dirname+'/pages/index.html'));
+})
+app.use('/', indexRouter)
+
 const logsRouter = require('./routes/logs')
 app.use('/logs', logsRouter)
 

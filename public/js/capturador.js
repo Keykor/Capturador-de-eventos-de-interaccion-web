@@ -1,46 +1,42 @@
-prevEvent = null;
-actEvent = null;
+previousEvent = null;
+actualEvent = null;
 scrollEvent = null;
 lastScrollEvent = null;
 logs = [];
 
-function mouseMoveActualization(e) {
-    actEvent = e;
+function mouseMoveUpdate(e) {
+    actualEvent = e;
 }
-window.addEventListener('mousemove', mouseMoveActualization);
+window.addEventListener('mousemove', mouseMoveUpdate);
 
-function mouseClickHandler(e) {
-    saveLog('mouse click', positionalData())
-}
-window.addEventListener('click', mouseClickHandler);
-
-function scrollActualization(e) {
+function scrollUpdate(e) {
     scrollEvent = e;
 }
-window.addEventListener('scroll', scrollActualization);
+window.addEventListener('scroll', scrollUpdate);
 
 var miliseconds = 1000;
-var transformation = miliseconds * 0.001;
-var prevSpeed = 0;
+var seconds = miliseconds * 0.001;
+var previousSpeed = 0;
 var speed = 0;
 var acceleration = 0;
+//intervalo para capturar eventos de movimiento y scrolling
 setInterval(function(){
-    if (prevEvent && actEvent && (prevEvent != actEvent)) {
-        var movementX=Math.abs(actEvent.screenX-prevEvent.screenX);
-        var movementY=Math.abs(actEvent.screenY-prevEvent.screenY);
+    if (previousEvent && actualEvent && (previousEvent != actualEvent)) {
+        var movementX=Math.abs(actualEvent.screenX-previousEvent.screenX);
+        var movementY=Math.abs(actualEvent.screenY-previousEvent.screenY);
         //hipotenusa de triangulo para saber movimiento
         var movement=Math.sqrt(movementX*movementX+movementY*movementY);
         // pixeles / segundos
-        speed=transformation*movement;
-        acceleration=transformation*(speed-prevSpeed);
+        speed=seconds*movement;
+        acceleration=seconds*(speed-previousSpeed);
 
         const data = positionalData();
         data.speed = speed;
         data.acceleration = acceleration;
         saveLog('mouse movement', data);
     }
-    prevEvent = actEvent;
-    prevSpeed = speed;
+    previousEvent = actualEvent;
+    previousSpeed = speed;
 
     if (scrollEvent && !(scrollEvent === lastScrollEvent)) { 
         saveLog('scrolling', positionalData());
@@ -48,6 +44,13 @@ setInterval(function(){
     }
 },miliseconds);
 
+//toma el evento del click del mouse
+function mouseClickHandler(e) {
+    saveLog('mouse click', positionalData())
+}
+window.addEventListener('click', mouseClickHandler);
+
+//guarda el Log en el array, poniendo su tipo, hora y data posicional
 function saveLog(newType, newData) {
     logs.push({
         type: newType,
@@ -56,11 +59,12 @@ function saveLog(newType, newData) {
     })
 }
 
+//crea objeto de la data de posicion del mouse
 function positionalData() {
     return {
-        posX: actEvent.clientX,
-        clientY: actEvent.clientY,
-        pageY: actEvent.pageY,
+        posX: actualEvent.clientX,
+        clientY: actualEvent.clientY,
+        pageY: actualEvent.pageY,
         outerWidth: window.outerWidth,
         outerHeight: window.outerHeight,
         scrollY: window.scrollY,
@@ -68,32 +72,12 @@ function positionalData() {
     }
 }
 
-function submitForm(e, form) {
-    e.preventDefault();
-    const objeto = {};
-    for(const pair of new FormData(form)) {
-        objeto[pair[0]] = pair[1];
-    }
-    objeto.logs = logs;
-    let xhr = new XMLHttpRequest();
-    xhr.onerror = () => {
-        alert("Ha ocurrido un error en el envío. Intente nuevamente.");
-        form[2].disabled = false;
-    };
-    xhr.open("POST","http://e523cff0ee29.ngrok.io/logs", true);
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify(objeto));
-    xhr.onload = function() {
-        alert("Sus datos se han enviado correctamente");
-        console.log(JSON.stringify(xhr.response));
-    };
-}
-
+//desactiva los eventos al tocar el boton terminar y activa el formulario final
 var terminar = document.getElementById('terminar')
 terminar.addEventListener('click', function(e) {
-    window.removeEventListener('mousemove', mouseMoveActualization);
+    window.removeEventListener('mousemove', mouseMoveUpdate);
     window.removeEventListener('click', mouseClickHandler);
-    window.removeEventListener('scroll', scrollActualization);
+    window.removeEventListener('scroll', scrollUpdate);
 
     terminar.disabled = true;
 
@@ -104,7 +88,7 @@ terminar.addEventListener('click', function(e) {
     formButton.addEventListener('click', function(e) {
         if (validateForm(form)) {
             formButton.disabled = true;
-            submitForm(e, form);
+            submitForm(e, createObjectToSend(form));
         }
     })
     form.style.visibility = "visible"
@@ -117,4 +101,28 @@ function validateForm(form) {
         return false;
     }
     return true;
+}
+
+//transforma los datos del form y logs en un objeto
+function createObjectToSend(form) {
+    for(const pair of new FormData(form)) {
+        objeto[pair[0]] = pair[1];
+    }
+    objeto.logs = logs;
+}
+
+function submitForm(e, object) {
+    e.preventDefault();
+    let xhr = new XMLHttpRequest();
+    xhr.onerror = () => {
+        alert("Ha ocurrido un error en el envío. Intente nuevamente.");
+        form[2].disabled = false;
+    };
+    xhr.open("POST","https://localhost:3000/logs", true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify(object));
+    xhr.onload = function() {
+        alert("Sus datos se han enviado correctamente");
+        console.log(JSON.stringify(xhr.response));
+    };
 }

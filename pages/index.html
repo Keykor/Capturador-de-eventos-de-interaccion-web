@@ -4,44 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        #form-background {
-            margin: 0;
-            background: rgba(0,0,0,0.8);
-            position: fixed;
-            top: 0;
-            right: 0;
-            height: 100vh;
-            width: 100vw;
-        }
-        #form-capturador {
-            background: rgb(255, 255, 255);
-            position: fixed;
-            padding-left: 10px;
-            padding-right: 10px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%)
-        }
-        #form-capturador * {
-            display: block;
-            box-sizing: border-box;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-        #form-capturador input, #form-capturador select  {
-            width: 100%;
-        }
-        #form-capturador #form-title {
-            font-size: x-large;
-            font-weight: bold;
-        }
-    </style>
+    <title>Capturador</title>
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
 </head>
 <body>
     <div id="form-background">
-        <form id="form-capturador">
+        <form id="form-capturador" onclick="return false">
             <div id="form-title">
                 Datos finales
             </div>
@@ -57,7 +25,7 @@
                 <option value="4"> 4 </option>
             </select>
 
-            <button type="submit">
+            <button id="form-button" type="submit">
                 Enviar
             </button>
         </form>
@@ -104,5 +72,7 @@
 
         Aliquam vestibulum, ipsum et euismod tincidunt, erat urna porta dolor, id elementum felis lectus et leo. Donec hendrerit quis nibh fermentum luctus. Ut convallis urna nec tellus lacinia aliquet. Sed tempor sit amet lacus eget iaculis. Praesent in posuere augue, ac aliquet nibh. Vivamus ac molestie leo. Aliquam vel risus est. Etiam condimentum, magna eget vestibulum sollicitudin, augue magna cursus urna, ac vehicula arcu est et massa. Mauris porta metus nec lacus pulvinar, id dignissim odio sagittis. Quisque facilisis enim non tellus fermentum, a consequat risus egestas. 
     </p>
+    <button id="terminar">Terminar Formulario</button>
+    <script type="text/javascript" src="/js/capturador.js"></script>
 </body>
 </html>

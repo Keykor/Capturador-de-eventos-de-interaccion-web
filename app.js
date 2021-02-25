@@ -14,6 +14,8 @@ app.use(express.json())
 
 app.use(cors())
 
+app.use(express.static('public'))
+
 const path = require('path')
 const indexRouter = express.Router()
 indexRouter.get('/', async (req, res) => {

@@ -1,6 +1,6 @@
-var previousEvent = null;
-var actualEvent = null;
-var scrollEvent = null;
+var previousMoveEvent = null;
+var recentMoveEvent = null;
+var recentScrollEvent = null;
 var lastScrollEvent = null;
 var logs = [];
 var miliseconds = 1000;
@@ -10,45 +10,57 @@ var speed = 0;
 var acceleration = 0;
 
 function mouseMoveUpdate(e) {
-    actualEvent = e;
+    recentMoveEvent = e;
 }
 
 function scrollUpdate(e) {
-    scrollEvent = e;
+    recentScrollEvent = e;
 }
 
-function mouseClickHandler(e) {
-    saveLog('mouse click', positionalData())
+function captureMouseClick(e) {
+    saveLog('mouse click', positionalData(recentMoveEvent))
 }
 
+function captureMouseMovement() {
+    var actualEvent = recentMoveEvent;
+    var previousEvent = previousMoveEvent;
+    if (previousEvent && actualEvent && (previousEvent != actualEvent)) {
+        var movementX=Math.abs(actualEvent.screenX-previousEvent.screenX);
+        var movementY=Math.abs(actualEvent.screenY-previousEvent.screenY);
+        //hipotenusa de triangulo para saber movimiento
+        var movement=Math.sqrt(movementX*movementX+movementY*movementY);
+        // pixeles / segundos
+        speed=seconds*movement;
+        acceleration=seconds*(speed-previousSpeed);
+
+        const data = positionalData(actualEvent);
+        data.speed = speed;
+        data.acceleration = acceleration;
+        saveLog('mouse movement', data);
+    }
+    previousMoveEvent = actualEvent;
+    previousSpeed = speed;
+}
+
+function captureScrolling() {
+    var actualEvent = recentScrollEvent;
+    if (actualEvent && !(actualEvent === lastScrollEvent)) { 
+        saveLog('scrolling', positionalData(recentMoveEvent));
+        lastScrollEvent = actualEvent;
+    }
+}
+
+function captureMovementAndScrolling() {
+    captureMouseMovement();
+    captureScrolling();
+}
+
+window.addEventListener('mousemove', mouseMoveUpdate);
+window.addEventListener('scroll', scrollUpdate);
 function startEventCapture() {
-    window.addEventListener('mousemove', mouseMoveUpdate);
-    window.addEventListener('scroll', scrollUpdate);
-    window.addEventListener('click', mouseClickHandler);
+    window.addEventListener('click', captureMouseClick);
     //intervalo para capturar eventos de movimiento y scrolling
-    setInterval(function(){
-        if (previousEvent && actualEvent && (previousEvent != actualEvent)) {
-            var movementX=Math.abs(actualEvent.screenX-previousEvent.screenX);
-            var movementY=Math.abs(actualEvent.screenY-previousEvent.screenY);
-            //hipotenusa de triangulo para saber movimiento
-            var movement=Math.sqrt(movementX*movementX+movementY*movementY);
-            // pixeles / segundos
-            speed=seconds*movement;
-            acceleration=seconds*(speed-previousSpeed);
-
-            const data = positionalData();
-            data.speed = speed;
-            data.acceleration = acceleration;
-            saveLog('mouse movement', data);
-        }
-        previousEvent = actualEvent;
-        previousSpeed = speed;
-
-        if (scrollEvent && !(scrollEvent === lastScrollEvent)) { 
-            saveLog('scrolling', positionalData());
-            lastScrollEvent = scrollEvent;
-        }
-    },miliseconds);
+    setInterval(captureMovementAndScrolling,miliseconds);
 }
 
 //guarda el Log en el array, poniendo su tipo, hora y data posicional
@@ -61,11 +73,11 @@ function saveLog(newType, newData) {
 }
 
 //crea objeto de la data de posicion del mouse
-function positionalData() {
+function positionalData(e) {
     return {
-        posX: actualEvent.clientX,
-        clientY: actualEvent.clientY,
-        pageY: actualEvent.pageY,
+        posX: e.clientX,
+        clientY: e.clientY,
+        pageY: e.pageY,
         outerWidth: window.outerWidth,
         outerHeight: window.outerHeight,
         scrollY: window.scrollY,

@@ -1,4 +1,4 @@
-#form-background {
+#message-background {
     margin: 0;
     background: rgba(0,0,0,0.8);
     position: fixed;
@@ -6,9 +6,19 @@
     right: 0;
     height: 100vh;
     width: 100vw;
+    visibility: visible;
+}
+#start-message, #thanks-message {
+    background: rgb(255, 255, 255);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
     visibility: hidden;
 }
-#form-capturador {
+
+#end-message {
     background: rgb(255, 255, 255);
     position: fixed;
     padding-left: 10px;
@@ -18,16 +28,16 @@
     transform: translate(-50%, -50%);
     visibility: hidden;
 }
-#form-capturador * {
+#end-message * {
     display: block;
     box-sizing: border-box;
     margin-top: 10px;
     margin-bottom: 10px;
 }
-#form-capturador input, #form-capturador select  {
+#end-message input, #end-message select  {
     width: 100%;
 }
-#form-capturador #form-title {
+#title-message {
     font-size: x-large;
     font-weight: bold;
 }

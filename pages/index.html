@@ -8,9 +8,22 @@
     <link rel="stylesheet" type="text/css" href="/css/index.css">
 </head>
 <body>
-    <div id="form-background">
-        <form id="form-capturador" onclick="return false">
-            <div id="form-title">
+    <div id="message-background">
+        <div id="start-message">
+            <div id="title-message">
+                ¡Bienvenido!
+            </div>
+            <p>
+                Usted debe encontrar y presionar el titular:
+            </p>
+            <p>
+                [TODAVIA NO PROGRAMADO]
+            </p>
+            <button id="start-button">Comenzar</button>
+        </div>
+
+        <form id="end-message" onclick="return false">
+            <div id="title-message">
                 Datos finales
             </div>
 
@@ -25,10 +38,15 @@
                 <option value="4"> 4 </option>
             </select>
 
-            <button id="form-button" type="submit">
+            <button id="send-button" type="submit">
                 Enviar
             </button>
         </form>
+
+        <div id="thanks-message">
+            <div id="title-message">Muchas gracias</div>
+            <p>Por participar en esta encuesta :)</p>
+        </div>
     </div>
     <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget mauris erat. In hac habitasse platea dictumst. Donec ullamcorper bibendum vulputate. Donec fringilla facilisis purus. Phasellus et dui id felis hendrerit mollis ut at massa. Proin non sagittis nisl. Etiam id dolor quam. In hac habitasse platea dictumst. Morbi at ligula at justo tristique efficitur. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vel neque sit amet magna malesuada laoreet. Duis dapibus ante id posuere porttitor. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Phasellus vitae maximus mi, sollicitudin bibendum ex.
@@ -72,7 +90,7 @@
 
         Aliquam vestibulum, ipsum et euismod tincidunt, erat urna porta dolor, id elementum felis lectus et leo. Donec hendrerit quis nibh fermentum luctus. Ut convallis urna nec tellus lacinia aliquet. Sed tempor sit amet lacus eget iaculis. Praesent in posuere augue, ac aliquet nibh. Vivamus ac molestie leo. Aliquam vel risus est. Etiam condimentum, magna eget vestibulum sollicitudin, augue magna cursus urna, ac vehicula arcu est et massa. Mauris porta metus nec lacus pulvinar, id dignissim odio sagittis. Quisque facilisis enim non tellus fermentum, a consequat risus egestas. 
     </p>
-    <button id="terminar">Terminar Formulario</button>
+    <button id="finish">Terminar Formulario</button>
     <script type="text/javascript" src="/js/capturador.js"></script>
 </body>
 </html>

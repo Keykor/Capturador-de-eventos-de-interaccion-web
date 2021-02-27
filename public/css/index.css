@@ -7,7 +7,7 @@
     height: 100vh;
     width: 100vw;
     visibility: visible;
-    z-index: 100;
+    z-index: 1000;
 }
 #start-message, #thanks-message {
     background: rgb(255, 255, 255);
@@ -17,7 +17,6 @@
     transform: translate(-50%, -50%);
     padding: 10px;
     visibility: hidden;
-    z-index: 100;
 }
 
 #end-message {
@@ -29,7 +28,6 @@
     left: 50%;
     transform: translate(-50%, -50%);
     visibility: hidden;
-    z-index: 100;
 }
 #end-message * {
     display: block;

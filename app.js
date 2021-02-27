@@ -19,7 +19,7 @@ app.use(express.static('public'))
 const path = require('path')
 const indexRouter = express.Router()
 indexRouter.get('/', async (req, res) => {
-    res.sendFile(path.join(__dirname+'/pages/WorldVision.html'));
+    res.sendFile(path.join(__dirname+'/pages/index.html'));
 })
 app.use('/', indexRouter)
 

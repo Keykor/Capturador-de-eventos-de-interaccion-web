@@ -101,7 +101,7 @@ var endMessage = document.getElementById('end-message');
 var sendButton = document.getElementById('send-button');
 finish.addEventListener('click', function(e) {
     window.removeEventListener('mousemove', mouseMoveUpdate);
-    window.removeEventListener('click', mouseClickHandler);
+    window.removeEventListener('click', captureMouseClick);
     window.removeEventListener('scroll', scrollUpdate);
 
     finish.disabled = true;

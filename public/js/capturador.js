@@ -2,6 +2,13 @@
 
 const messageBackground = document.getElementById('message-background')
 
+const selectedHeader = selectRandomInArray(document.getElementsByTagName("H5"));
+document.getElementById('selected-header').innerText = selectedHeader.innerText
+
+function selectRandomInArray(array) {
+    return array[Math.floor(Math.random() * array.length)]
+}
+
 //muestra mensaje inicial y comienza captura al tocar el boton
 const startButton = document.getElementById('start-button');
 const startMessage = document.getElementById('start-message');
@@ -14,15 +21,14 @@ function startGame() {
     startEventCapture()
 }
 
-//desactiva los eventos al tocar el boton finish y activa el formulario final
-const finish = document.getElementById('finish')
+//desactiva los eventos al tocar el header seleccionado y activa el formulario final
 const endMessage = document.getElementById('end-message');
 const sendButton = document.getElementById('send-button');
-finish.addEventListener('click', endGame)
+selectedHeader.addEventListener('click', endGame)
 
 function endGame() {
     stopCapture()
-    finish.disabled = true;
+    selectedHeader.removeEventListener('click', endGame);
     messageBackground.style.visibility = "visible";
     endMessage.style.visibility = "visible";
     sendButton.addEventListener('click', submitIfValidate);

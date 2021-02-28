@@ -1,13 +1,78 @@
+/* ---------- SECCION DE MENSAJES Y JUEGO ----------*/
+
+const messageBackground = document.getElementById('message-background')
+
+//muestra mensaje inicial y comienza captura al tocar el boton
+const startButton = document.getElementById('start-button');
+const startMessage = document.getElementById('start-message');
+startMessage.style.visibility = "visible";
+startButton.addEventListener('click', startGame)
+
+function startGame() {
+    messageBackground.style.visibility = "hidden";
+    startMessage.style.visibility = "hidden";
+    startEventCapture()
+}
+
+//desactiva los eventos al tocar el boton finish y activa el formulario final
+const finish = document.getElementById('finish')
+const endMessage = document.getElementById('end-message');
+const sendButton = document.getElementById('send-button');
+finish.addEventListener('click', endGame)
+
+function endGame() {
+    stopCapture()
+    finish.disabled = true;
+    messageBackground.style.visibility = "visible";
+    endMessage.style.visibility = "visible";
+    sendButton.addEventListener('click', submitIfValidate);
+}
+
+function submitIfValidate(e) {
+    e.preventDefault();
+    if (validateForm(endMessage)) {
+        sendButton.disabled = true;
+        submitForm(createObjectToSend(endMessage));
+    }
+}
+
+function validateForm(form) {
+    var age = form[0].value;
+    if (age == "" || age < 1 || age > 100) {
+        alert("Ingrese una edad válida");
+        return false;
+    }
+    return true;
+}
+
+
+
+/* ---------- SECCION DE CAPTURADOR Y EVENTOS ----------*/
+
 var previousMoveEvent = null;
 var recentMoveEvent = null;
 var recentScrollEvent = null;
 var lastScrollEvent = null;
 var logs = [];
-var miliseconds = 1000;
-var seconds = miliseconds * 0.001;
+const miliseconds = 1000;
+const seconds = miliseconds * 0.001;
 var previousSpeed = 0;
 var speed = 0;
 var acceleration = 0;
+
+window.addEventListener('mousemove', mouseMoveUpdate);
+window.addEventListener('scroll', scrollUpdate);
+function startEventCapture() {
+    window.addEventListener('click', captureMouseClick);
+    //intervalo para capturar eventos de movimiento y scrolling
+    setInterval(captureMovementAndScrolling,miliseconds);
+}
+
+function stopCapture() {
+    window.removeEventListener('mousemove', mouseMoveUpdate);
+    window.removeEventListener('click', captureMouseClick);
+    window.removeEventListener('scroll', scrollUpdate);
+}
 
 function mouseMoveUpdate(e) {
     recentMoveEvent = e;
@@ -55,23 +120,6 @@ function captureMovementAndScrolling() {
     captureScrolling();
 }
 
-window.addEventListener('mousemove', mouseMoveUpdate);
-window.addEventListener('scroll', scrollUpdate);
-function startEventCapture() {
-    window.addEventListener('click', captureMouseClick);
-    //intervalo para capturar eventos de movimiento y scrolling
-    setInterval(captureMovementAndScrolling,miliseconds);
-}
-
-//guarda el Log en el array, poniendo su tipo, hora y data posicional
-function saveLog(newType, newData) {
-    logs.push({
-        type: newType,
-        timestamp: Date.now(),
-        data: newData
-    })
-}
-
 //crea objeto de la data de posicion del mouse
 function positionalData(e) {
     return {
@@ -85,46 +133,18 @@ function positionalData(e) {
     }
 }
 
-//muestra mensaje inicial y comienza captura al tocar el boton
-var startButton = document.getElementById('start-button');
-var startMessage = document.getElementById('start-message');
-startMessage.style.visibility = "visible";
-startButton.addEventListener('click', function(e) {
-    document.getElementById('message-background').style.visibility = "hidden";
-    startMessage.style.visibility = "hidden";
-    startEventCapture()
-})
-
-//desactiva los eventos al tocar el boton finish y activa el formulario final
-var finish = document.getElementById('finish')
-var endMessage = document.getElementById('end-message');
-var sendButton = document.getElementById('send-button');
-finish.addEventListener('click', function(e) {
-    window.removeEventListener('mousemove', mouseMoveUpdate);
-    window.removeEventListener('click', captureMouseClick);
-    window.removeEventListener('scroll', scrollUpdate);
-
-    finish.disabled = true;
-
-    document.getElementById('message-background').style.visibility = "visible";
-
-    sendButton.addEventListener('click', function(e) {
-        if (validateForm(endMessage)) {
-            sendButton.disabled = true;
-            submitForm(e, createObjectToSend(endMessage));
-        }
+//guarda el Log en el array, poniendo su tipo, hora y data posicional
+function saveLog(newType, newData) {
+    logs.push({
+        type: newType,
+        timestamp: Date.now(),
+        data: newData
     })
-    endMessage.style.visibility = "visible";
-})
-
-function validateForm(form) {
-    var age = form[0].value;
-    if (age == "" || age < 1 || age > 100) {
-        alert("Ingrese una edad válida");
-        return false;
-    }
-    return true;
 }
+
+
+
+/* ---------- SECCION DE ENVIO DE DATOS ----------*/
 
 //transforma los datos del form y logs en un objeto
 function createObjectToSend(form) {
@@ -138,7 +158,6 @@ function createObjectToSend(form) {
 }
 
 function submitForm(e, object) {
-    e.preventDefault();
     let xhr = new XMLHttpRequest();
     xhr.onerror = () => {
         alert("Ha ocurrido un error en el envío. Intente nuevamente.");

@@ -42,3 +42,17 @@
     font-size: x-large;
     font-weight: bold;
 }
+#end-message #tech-level-title {
+    margin-bottom: 0px;
+}
+
+#end-message .options {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+#end-message .option-label {
+    padding: 0;
+    margin: 10px 10px 10px 0px;
+}

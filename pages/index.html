@@ -34,22 +34,30 @@
           <button id="start-button">Comenzar</button>
       </div>
 
-      <form id="end-message" onclick="return false">
+      <form id="end-message" onclick="">
           <div id="title-message">
               Datos finales
           </div>
 
-          <label for="age">Edad: </label>
-          <input type="number" id="formAge" name="age" min="10" max="100" value="18"/>
-
-          <label for="level">Nivel tecnológico: </label>
-          <select name="level" required=true>
-              <option value="1"> 1 </option>
-              <option value="2"> 2 </option>
-              <option value="3"> 3 </option>
-              <option value="4"> 4 </option>
-          </select>
-
+          <div>
+            <label for="age">Edad: </label>
+            <input type="number" id="formAge" name="age" min="10" max="100" value="18"/>
+          </div>
+          
+          <div>
+            <p id="tech-level-title">Nivel tecnológico: </p>
+            <div class="options">
+              <input id="level-1" name="level" value="1" type="radio" checked>
+              <label for="level-1" class="option-label">1</label>
+              <input id="level-2" name="level" value="2" type="radio">
+              <label for="level-2" class="option-label">2</label>
+              <input id="level-3" name="level" value="3" type="radio">
+              <label for="level-3" class="option-label">3</label>
+              <input id="level-4" name="level" value="4" type="radio">
+              <label for="level-4" class="option-label">4</label>
+            </div>
+          </div>
+            
           <button id="send-button" type="submit">
               Enviar
           </button>
@@ -620,7 +628,7 @@
                   <img src="/images/logo.svg" class="footer-logo" alt="">
 
                   <div class="d-flex justify-content-end footer-social">
-                    <h5 class="m-0 font-weight-600 mr-3 d-none d-lg-flex">Follow on</h5>
+                    <h4 class="m-0 font-weight-600 mr-3 d-none d-lg-flex">Follow on</h4>
                     <ul class="social-media">
                       <li>
                         <a href="#">
@@ -676,7 +684,6 @@
         <!-- partial -->
       </div>
     </div>
-    <button id="finish">Terminar Formulario</button>
     <!-- inject:js -->
     <script src="/js/vendor.js"></script>
     <!-- endinject -->

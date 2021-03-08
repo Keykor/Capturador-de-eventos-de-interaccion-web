@@ -51,6 +51,7 @@ class Game {
             this.startMessage.style.visibility = "visible";
         }
         else {
+            this.logger.startEventCapture();
             this.selectedHeader.removeEventListener('click', this.endGame);   
             this.endMessage.style.visibility = "visible";
             this.sendButton.addEventListener('click', this.submitIfValidate);
@@ -61,6 +62,11 @@ class Game {
         e.preventDefault();
         if (this.validateEndMessage()) {
             this.sendButton.disabled = true;
+            if (!this.logger.isStopped) {
+                this.logger.stopCapture();
+                this.logger.captureMouseClick();
+                this.logs.push(this.logger.logs);
+            }
             this.sender.submitForm(this.transformEndMessage(), this.sendButton);
         }
     }
@@ -95,6 +101,8 @@ function selectRandomInArray(array) {
 /* ---------- SECCION DE CAPTURADOR Y EVENTOS ----------*/
 class Logger {
     constructor(miliseconds) {
+        this.isStopped = true;
+
         this.previousMoveEvent = null;
         this.recentMoveEvent = null;
         this.recentScrollEvent = null;
@@ -109,6 +117,7 @@ class Logger {
     }
 
     startEventCapture() {
+        this.isStopped = false;
         window.addEventListener('click', this.captureMouseClick);
         //intervalo para capturar eventos de movimiento y scrolling
         setInterval(this.captureMovementAndScrolling, this.miliseconds);
@@ -118,6 +127,7 @@ class Logger {
         window.removeEventListener('mousemove', this.mouseMoveUpdate);
         window.removeEventListener('click', this.captureMouseClick);
         window.removeEventListener('scroll', this.scrollUpdate);
+        this.isStopped = true;
     }
 
     captureMouseMovement() {

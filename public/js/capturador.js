@@ -1,24 +1,35 @@
 /* ---------- SECCION DE MENSAJES Y JUEGO ----------*/
 class Game {
+
     constructor(document) {
+        this.messages = ["Bienvenido", "¡Muy bien!", "Ya casi termina"]
+        this.attempt = 0
+        this.logs = []
+
         this.logger = new Logger(1000);
         this.sender = new Sender("http://localhost:3000/logs");
         
         this.messageBackground = document.getElementById('message-background');
-
-        this.selectedHeader = selectRandomInArray(document.getElementsByTagName("H5"));
-        document.getElementById('selected-header').innerText = this.selectedHeader.innerText;
+        
+        this.selectNewHeader();
 
         //muestra mensaje inicial y comienza captura al tocar el boton
         this.startButton = document.getElementById('start-button');
         this.startMessage = document.getElementById('start-message');
+        this.startMessageTitle = document.getElementById('start-message-title');
         this.startMessage.style.visibility = "visible";
         this.startButton.addEventListener('click', this.startGame)
 
         //desactiva los eventos al tocar el header seleccionado y activa el formulario final
         this.endMessage = document.getElementById('end-message');
         this.sendButton = document.getElementById('send-button');
-        this.selectedHeader.addEventListener('click', this.endGame)
+        
+    }
+
+    selectNewHeader() {
+        this.selectedHeader = selectRandomInArray(document.getElementsByTagName("H5"));
+        document.getElementById('selected-header').innerText = this.selectedHeader.innerText;
+        this.selectedHeader.addEventListener('click', this.endGame);
     }
 
     //los handlers son funciones anonimas para que el this se refiera al objeto
@@ -29,11 +40,21 @@ class Game {
     }
 
     endGame = e => {
-        this.logger.stopCapture()
-        this.selectedHeader.removeEventListener('click', this.endGame);
+        this.logger.stopCapture();
         this.messageBackground.style.visibility = "visible";
-        this.endMessage.style.visibility = "visible";
-        this.sendButton.addEventListener('click', this.submitIfValidate);
+        this.attempt++;
+        this.logs.push(this.logger.logs);
+        this.logger = new Logger(1000);
+        if (this.attempt < 3) {
+            this.selectNewHeader();
+            this.startMessageTitle.innerText = this.messages[this.attempt];
+            this.startMessage.style.visibility = "visible";
+        }
+        else {
+            this.selectedHeader.removeEventListener('click', this.endGame);   
+            this.endMessage.style.visibility = "visible";
+            this.sendButton.addEventListener('click', this.submitIfValidate);
+        } 
     }
 
     submitIfValidate = e => {
@@ -50,7 +71,7 @@ class Game {
         for(const pair of new FormData(this.endMessage)) {
             newObject[pair[0]] = pair[1];
         }
-        newObject.logs = this.logger.logs;
+        newObject.logs = this.logs;
         console.log(newObject)
         return newObject;
     }
@@ -82,6 +103,7 @@ class Logger {
         this.seconds = miliseconds * 0.001;
         this.miliseconds = miliseconds;
         this.previousSpeed = 0;
+        window.scroll(0,0)
         window.addEventListener('mousemove', this.mouseMoveUpdate);
         window.addEventListener('scroll', this.scrollUpdate);
     }

@@ -7,7 +7,7 @@ router.get('/', async (req, res) => {
     try {
         const logs = await Log.find()
         res.json(logs)
-    } catch {
+    } catch (err) {
         res.status(500).json({message: err.message})
     }
 })

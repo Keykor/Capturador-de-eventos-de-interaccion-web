@@ -43,6 +43,7 @@
     font-weight: bold;
 }
 #end-message #tech-level-title {
+    margin-top: 30px;
     margin-bottom: 0px;
 }
 
@@ -55,4 +56,9 @@
 #end-message .option-label {
     padding: 0;
     margin: 10px 10px 10px 0px;
+    width: 20%;
+}
+#end-message .option-label input{
+  display: inline-block;
+  width: 50%;
 }

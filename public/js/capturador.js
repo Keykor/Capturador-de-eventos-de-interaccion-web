@@ -18,7 +18,7 @@ class Game {
         this.startMessage = document.getElementById('start-message');
         this.startMessageTitle = document.getElementById('start-message-title');
         this.startMessage.style.visibility = "visible";
-        this.startButton.addEventListener('click', this.startGame)
+        this.startButton.addEventListener('click', this.startAttempt)
 
         //desactiva los eventos al tocar el header seleccionado y activa el formulario final
         this.endMessage = document.getElementById('end-message');
@@ -29,17 +29,17 @@ class Game {
     selectNewHeader() {
         this.selectedHeader = selectRandomInArray(document.getElementsByTagName("H5"));
         document.getElementById('selected-header').innerText = this.selectedHeader.innerText;
-        this.selectedHeader.addEventListener('click', this.endGame);
+        this.selectedHeader.addEventListener('click', this.endAttempt);
     }
 
     //los handlers son funciones anonimas para que el this se refiera al objeto
-    startGame = e => {
+    startAttempt = e => {
         this.messageBackground.style.visibility = "hidden";
         this.startMessage.style.visibility = "hidden";
         this.logger.startEventCapture()
     }
 
-    endGame = e => {
+    endAttempt = e => {
         this.logger.stopCapture();
         this.messageBackground.style.visibility = "visible";
         this.attempt++;
@@ -52,9 +52,9 @@ class Game {
         }
         else {
             this.logger.startEventCapture();
-            this.selectedHeader.removeEventListener('click', this.endGame);   
-            this.endMessage.style.visibility = "visible";
+            this.selectedHeader.removeEventListener('click', this.endAttempt);   
             this.sendButton.addEventListener('click', this.submitIfValidate);
+            this.endMessage.style.visibility = "visible";
         } 
     }
 
@@ -64,7 +64,6 @@ class Game {
             this.sendButton.disabled = true;
             if (!this.logger.isStopped) {
                 this.logger.stopCapture();
-                this.logger.captureMouseClick();
                 this.logs.push(this.logger.logs);
             }
             this.sender.submitForm(this.transformEndMessage(), this.sendButton);
@@ -120,13 +119,15 @@ class Logger {
         this.isStopped = false;
         window.addEventListener('click', this.captureMouseClick);
         //intervalo para capturar eventos de movimiento y scrolling
-        setInterval(this.captureMovementAndScrolling, this.miliseconds);
+        this.interval = setInterval(this.captureMovementAndScrolling, this.miliseconds);
     }
 
     stopCapture() {
+        clearInterval(this.interval);
         window.removeEventListener('mousemove', this.mouseMoveUpdate);
         window.removeEventListener('click', this.captureMouseClick);
         window.removeEventListener('scroll', this.scrollUpdate);
+        this.captureMouseClick();
         this.isStopped = true;
     }
 

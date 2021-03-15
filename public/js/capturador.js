@@ -7,7 +7,7 @@ class Game {
         this.logs = []
 
         this.logger = new Logger(1000);
-        this.sender = new Sender("http://localhost:3000/logs");
+        this.sender = new Sender("https://encuestanews.tk/logs");
         
         this.messageBackground = document.getElementById('message-background');
         

@@ -110,6 +110,7 @@ class Logger {
         this.seconds = miliseconds * 0.001;
         this.miliseconds = miliseconds;
         this.previousSpeed = 0;
+        this.previousAcceleration = 0;
         window.scroll(0,0)
         window.addEventListener('mousemove', this.mouseMoveUpdate);
         window.addEventListener('scroll', this.scrollUpdate);
@@ -132,24 +133,40 @@ class Logger {
     }
 
     captureMouseMovement() {
-        var actualEvent = this.recentMoveEvent;
-        var previousEvent = this.previousMoveEvent;
-        if (previousEvent && actualEvent && (previousEvent != actualEvent)) {
-            var movementX=Math.abs(actualEvent.screenX-previousEvent.screenX);
-            var movementY=Math.abs(actualEvent.screenY-previousEvent.screenY);
-            //hipotenusa de triangulo para saber movimiento
-            var movement=Math.sqrt(movementX*movementX+movementY*movementY);
-            // pixeles / segundos
-            var speed=this.seconds*movement;
-            var acceleration=this.seconds*(speed-this.previousSpeed);
-
-            const data = this.positionalData(actualEvent);
-            data.speed = speed;
-            data.acceleration = acceleration;
-            this.saveLog('mouse movement', data);
+        let actualEvent = this.recentMoveEvent;
+        let previousEvent = this.previousMoveEvent;
+        if (actualEvent) {
+            if (previousEvent) {
+                let movementX=Math.abs(actualEvent.screenX-previousEvent.screenX);
+                let movementY=Math.abs(actualEvent.screenY-previousEvent.screenY);
+                //hipotenusa de triangulo para saber movimiento
+                let movement=Math.sqrt(movementX*movementX+movementY*movementY);
+                // pixeles / segundos (estáticos del capturador)
+                let speed=movement/this.seconds;
+                let acceleration=(speed-this.previousSpeed)/this.seconds;
+                
+                //para no guardar tantos eventos iguales pero si el que desacelera y el proximo
+                if (previousEvent != actualEvent || this.previousAcceleration != 0) {
+                    this.saveMouseMovementLog(actualEvent, speed, acceleration);
+                }
+                this.previousAcceleration = acceleration;
+                this.previousSpeed = speed;
+            }
+            else {
+                //para el caso de inicio
+                this.saveMouseMovementLog(actualEvent, 0, 0);
+                this.previousAcceleration = 0;
+                this.previousSpeed = 0;
+            }
+            this.previousMoveEvent = actualEvent;
         }
-        this.previousMoveEvent = actualEvent;
-        this.previousSpeed = speed;
+    }
+
+    saveMouseMovementLog(actualEvent, speed, acceleration) {
+        const data = this.positionalData(actualEvent);
+        data.speed = speed;
+        data.acceleration = acceleration;
+        this.saveLog('mouse movement', data);
     }
 
     captureScrolling() {

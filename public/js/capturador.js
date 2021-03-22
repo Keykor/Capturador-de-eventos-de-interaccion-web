@@ -1,3 +1,6 @@
+const MILISECONDS = 200;
+const URLTOSEND = "https://encuestanews.tk/logs"
+
 /* ---------- SECCION DE MENSAJES Y JUEGO ----------*/
 class Game {
 
@@ -6,8 +9,8 @@ class Game {
         this.attempt = 0
         this.logs = []
 
-        this.logger = new Logger(1000);
-        this.sender = new Sender("https://encuestanews.tk/logs");
+        this.logger = new Logger(MILISECONDS);
+        this.sender = new Sender(URLTOSEND);
         
         this.messageBackground = document.getElementById('message-background');
         
@@ -44,7 +47,7 @@ class Game {
         this.messageBackground.style.visibility = "visible";
         this.attempt++;
         this.logs.push(this.logger.logs);
-        this.logger = new Logger(1000);
+        this.logger = new Logger(MILISECONDS);
         if (this.attempt < 3) {
             this.selectNewHeader();
             this.startMessageTitle.innerText = this.messages[this.attempt];
@@ -77,7 +80,6 @@ class Game {
             newObject[pair[0]] = pair[1];
         }
         newObject.logs = this.logs;
-        console.log(newObject)
         return newObject;
     }
 
@@ -102,8 +104,8 @@ class Logger {
     constructor(miliseconds) {
         this.isStopped = true;
 
-        this.previousMoveEvent = null;
-        this.recentMoveEvent = null;
+        this.previousMouseEvent = null;
+        this.recentMouseEvent = null;
         this.recentScrollEvent = null;
         this.lastScrollEvent = null;
         this.logs = [];
@@ -128,13 +130,13 @@ class Logger {
         window.removeEventListener('mousemove', this.mouseMoveUpdate);
         window.removeEventListener('click', this.captureMouseClick);
         window.removeEventListener('scroll', this.scrollUpdate);
-        this.captureMouseClick();
+        this.captureMouseClick(this.recentMouseEvent);
         this.isStopped = true;
     }
 
     captureMouseMovement() {
-        let actualEvent = this.recentMoveEvent;
-        let previousEvent = this.previousMoveEvent;
+        let actualEvent = this.recentMouseEvent;
+        let previousEvent = this.previousMouseEvent;
         if (actualEvent) {
             if (previousEvent) {
                 let movementX=Math.abs(actualEvent.screenX-previousEvent.screenX);
@@ -144,7 +146,6 @@ class Logger {
                 // pixeles / segundos (estáticos del capturador)
                 let speed=movement/this.seconds;
                 let acceleration=(speed-this.previousSpeed)/this.seconds;
-                
                 //para no guardar tantos eventos iguales pero si el que desacelera y el proximo
                 if (previousEvent != actualEvent || this.previousAcceleration != 0) {
                     this.saveMouseMovementLog(actualEvent, speed, acceleration);
@@ -158,7 +159,7 @@ class Logger {
                 this.previousAcceleration = 0;
                 this.previousSpeed = 0;
             }
-            this.previousMoveEvent = actualEvent;
+            this.previousMouseEvent = actualEvent;
         }
     }
 
@@ -172,7 +173,7 @@ class Logger {
     captureScrolling() {
         var actualEvent = this.recentScrollEvent;
         if (actualEvent && !(actualEvent === this.lastScrollEvent)) { 
-            this.saveLog('scrolling', this.positionalData(this.recentMoveEvent));
+            this.saveLog('scrolling', this.positionalData(this.recentMouseEvent));
             this.lastScrollEvent = actualEvent;
         }
     }
@@ -183,8 +184,8 @@ class Logger {
             posX: e.clientX,
             clientY: e.clientY,
             pageY: e.pageY,
-            outerWidth: window.outerWidth,
-            outerHeight: window.outerHeight,
+            innerWidth: window.innerWidth,
+            innerHeight: window.innerHeight,
             scrollY: window.scrollY,
             scrollHeight: document.documentElement.scrollHeight
         }
@@ -202,7 +203,7 @@ class Logger {
 
     //los handlers son funciones anonimas para que el this se refiera al objeto
     mouseMoveUpdate = e => {
-        this.recentMoveEvent = e;
+        this.recentMouseEvent = e;
     }
 
     scrollUpdate = e => {
@@ -210,7 +211,8 @@ class Logger {
     }
 
     captureMouseClick = e => {
-        this.saveLog('mouse click', this.positionalData(this.recentMoveEvent))
+        this.recentMouseEvent = e;
+        this.saveLog('mouse click', this.positionalData(e))
     }
 
     captureMovementAndScrolling = e => {

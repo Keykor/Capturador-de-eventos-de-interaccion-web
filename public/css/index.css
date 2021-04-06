@@ -39,7 +39,7 @@
     width: 100%;
 }
 .title-message {
-    font-size: x-large;
+    font-size: 200%;
     font-weight: bold;
 }
 #end-message #tech-level-title {
@@ -59,6 +59,9 @@
     width: 20%;
 }
 #end-message .option-label input{
-  display: inline-block;
-  width: 50%;
+    display: inline-block;
+    width: 50%;
+}
+#selected-header {
+    font-style: italic;
 }

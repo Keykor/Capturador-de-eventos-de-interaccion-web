@@ -5,7 +5,7 @@ const URLTOSEND = "https://encuestanews.tk/logs"
 class Game {
 
     constructor(document) {
-        this.messages = ["Bienvenido", "¡Muy bien!", "Ya casi termina"]
+        this.messages = ["Tarea 1", "Tarea 2", "Tarea 3"]
         this.attempt = 0
         this.logs = []
 
@@ -31,7 +31,7 @@ class Game {
 
     selectNewHeader() {
         this.selectedHeader = selectRandomInArray(document.getElementsByTagName("H5"));
-        document.getElementById('selected-header').innerText = this.selectedHeader.innerText;
+        document.getElementById('selected-header').innerText = '"' + this.selectedHeader.innerText + '"';
         this.selectedHeader.addEventListener('click', this.endAttempt);
     }
 

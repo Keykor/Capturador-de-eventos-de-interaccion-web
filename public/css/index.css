@@ -65,3 +65,6 @@
 #selected-header {
     font-style: italic;
 }
+h1, h5, p.fs-14 {
+    cursor: pointer !important;
+}
